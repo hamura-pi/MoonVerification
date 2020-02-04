@@ -7,8 +7,10 @@ public class CardDeck : MonoBehaviour
     public const int ReqNumberOfOpenCard = 2;
 
     public Vector2 distBeetweenCard;
-    public Vector2 sizOfDesk;
-        
+    public Vector2 sizeOfField;
+
+    public int CountCards;
+    
     public Card[] Cards;
     
 
@@ -16,12 +18,18 @@ public class CardDeck : MonoBehaviour
     private List<Transform> deckPosition;
     private void Start()
     {
+        CreateCardField();
         _selectedCard = new List<Card>();
         
         foreach (var card in Cards)
         {
             card.SetCardDeck(this);
         }
+    }
+
+    private void CreateCardField()
+    {
+        CountCards
     }
 
     public void OpenCard(Card card)
