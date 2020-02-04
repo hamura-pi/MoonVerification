@@ -5,10 +5,15 @@ using UnityEngine;
 public class CardDeck : MonoBehaviour
 {
     public const int ReqNumberOfOpenCard = 2;
+
+    public Vector2 distBeetweenCard;
+    public Vector2 sizOfDesk;
+        
     public Card[] Cards;
+    
 
     private List<Card> _selectedCard;
-
+    private List<Transform> deckPosition;
     private void Start()
     {
         _selectedCard = new List<Card>();
