@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
@@ -7,49 +8,82 @@ using UnityEngine.PlayerLoop;
 namespace MiniGames.GameEngine
 {   
     [RequireComponent(typeof(Animator))]
-    public class Card : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerEnterHandler
+    public class Card : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     {
         public const float CardSize = 0.4731f;
-        
         public CardData Data;
         public SpriteRenderer FaceSriteRenderer;
-        public Transform target;
-
+        
         public bool IsOpenCard => _isOpenCard;
-       
-
+        
+        private Animator _animator;
         private CardDeck _cardDeck;
         private bool _isOpenCard;
-
-        // Start is called before the first frame update
+        
         void Start()
         {
             FaceSriteRenderer.sprite = Data.FaceCard;
             FaceSriteRenderer.size = new Vector2(CardSize, CardSize);
-            
+
+            _animator = GetComponent<Animator>();
             _isOpenCard = false;
         }
 
-        // Update is called once per frame
-        void Update()
+        public void SetCardDeck(CardDeck cardDeck)
         {
-            /*if (Input.GetKeyDown(KeyCode.O))
+            this._cardDeck = cardDeck;
+        }
+        
+        private void CloseCard()
+        {
+            _isOpenCard = false;
+            AnimationStateCard();
+        }
+
+        private void CardDisappears()
+        {
+            gameObject.SetActive(false);
+        }
+
+        private void AnimationStateCard()
+        {
+            _animator.SetBool("Open", _isOpenCard);
+        }
+
+        public void Match(bool isMatch)
+        {
+            if (isMatch)
             {
-                transform.DOMove(target.position, 5, false);
-            }*/
+                CardDisappears();
+            }
+            else
+            {
+                CloseCard();
+            }
+        }
+
+        IEnumerator DelayOpen()
+        {
+            yield return new WaitForSeconds(1f);
+            while (_animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1)
+            {
+                yield return null;
+            }
+            yield return new WaitForSeconds(0.5f);
+            _cardDeck.OpenCard(this);
         }
         
         #region ImplementInput
-
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            Debug.Log("<color=blue>" + gameObject.name + "</color>");
-            var s = DOTween.Sequence();
-        }
         
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (!_isOpenCard)
+            {
+                _isOpenCard = true;
+            }
             
+            AnimationStateCard();
+            StartCoroutine(DelayOpen());
         }
 
         public void OnPointerEnter(PointerEventData eventData)

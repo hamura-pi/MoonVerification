@@ -11,6 +11,11 @@ namespace MiniGames.Memory
         //TODO: select gameModel with difficulty controller class
         public MemoryGameModel defaultGameModel;
 
+        private void Start()
+        {
+            OnExecute();
+        }
+
         protected override AsyncState OnExecute()
         {
             return Planner.Chain()
@@ -19,9 +24,10 @@ namespace MiniGames.Memory
                     .AddFunc(Outro)
                 ;
         }
-
+        
         private AsyncState Intro()
         {
+            Debug.Log("Intro");
             return Planner.Chain()
                     // TODO: intro cut scene. Run camera animation. Await animation finish
                     .AddAction(Debug.Log, "start intro")
